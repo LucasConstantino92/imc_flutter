@@ -10,6 +10,8 @@ class home_page extends StatefulWidget {
 class _home_pageState extends State<home_page> {
   String _info = 'Informe seus dados.';
   String? result;
+  String? errorTxtPeso;
+  String? errorTxtAltura;
 
   TextEditingController weightController = TextEditingController();
   TextEditingController heightController = TextEditingController();
@@ -31,7 +33,7 @@ class _home_pageState extends State<home_page> {
           ],
         ),
         body: SingleChildScrollView(
-          padding: EdgeInsets.all(16),
+          padding: const EdgeInsets.all(16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -43,12 +45,13 @@ class _home_pageState extends State<home_page> {
               TextField(
                 controller: weightController,
                 keyboardType: TextInputType.number,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
+                  errorText: errorTxtPeso,
                   labelText: 'Peso (Kg)',
-                  labelStyle: TextStyle(color: Colors.green),
+                  labelStyle: const TextStyle(color: Colors.green),
                 ),
                 textAlign: TextAlign.center,
-                style: TextStyle(
+                style: const TextStyle(
                   color: Colors.green,
                   fontSize: 25,
                 ),
@@ -57,9 +60,10 @@ class _home_pageState extends State<home_page> {
               TextField(
                 controller: heightController,
                 keyboardType: TextInputType.number,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
+                  errorText: errorTxtAltura,
                   labelText: 'Altura (cm)',
-                  labelStyle: TextStyle(color: Colors.green),
+                  labelStyle: const TextStyle(color: Colors.green),
                 ),
                 textAlign: TextAlign.center,
                 style: const TextStyle(
@@ -72,14 +76,14 @@ class _home_pageState extends State<home_page> {
                 height: 50,
                 child: ElevatedButton(
                   onPressed: calculate,
-                  child: Text(
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.green,
+                  ),
+                  child: const Text(
                     'Calcular',
                     style: TextStyle(
                       fontSize: 22,
                     ),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    primary: Colors.green,
                   ),
                 ),
               ),
@@ -101,12 +105,40 @@ class _home_pageState extends State<home_page> {
   void _resetField() {
     heightController.text = "";
     weightController.text = "";
+    errorTxtPeso = null;
+    errorTxtAltura = null;
+
     setState(() {
       _info = 'Informe seus dados';
     });
   }
 
   void calculate() {
+    String txtPeso = weightController.text;
+    String txtAltura = heightController.text;
+
+    if (txtPeso.isEmpty) {
+      setState(() {
+        errorTxtPeso = 'Insira seu peso!';
+      });
+      return;
+    } else {
+      setState(() {
+        errorTxtPeso = null;
+      });
+    }
+
+    if (txtAltura.isEmpty) {
+      setState(() {
+        errorTxtAltura = 'Insira sua altura!';
+      });
+      return;
+    } else {
+      setState(() {
+        errorTxtAltura = null;
+      });
+    }
+
     double weight = double.parse(weightController.text);
     double height = double.parse(heightController.text) / 100;
 
